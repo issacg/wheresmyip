@@ -87,5 +87,10 @@ function get(event, context) {
     });
 }
 
+function noop(events, context) {
+    context.succeed();
+}
+
 module.exports.set = set;
 module.exports.get = get;
+module.exports.noop = noop;
