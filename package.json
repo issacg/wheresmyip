@@ -1,0 +1,19 @@
+{
+  "name": "wheresmyip",
+  "version": "0.0.1",
+  "description": "The open wheresmyip database",
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "ip-address": "^4.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/issacg/wheresmyip.git"
+  },
+  "author": "Issac Goldstand <issac@ironsrc.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/issacg/wheresmyip/issues"
+  },
+  "homepage": "https://github.com/issacg/wheresmyip#readme"
+}
