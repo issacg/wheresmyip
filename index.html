@@ -1,0 +1,75 @@
+<html>
+<head>
+    <script src="https://cdn.rawgit.com/issacg/wheresmyip/master/wheresmyip-browser.js"></script>
+    <title>Where's My IP?</title>
+</head>
+<body>
+<h2>
+What Is It?
+</h2>
+<p>WheresMyIp.org is an open-source and crowd-sourced-data project striving to
+provide free as-accurate-as-possible IP to geographic location information for
+the IoT age.  As devices become more portable and location-aware, getting exact
+information for the location of any device (especially IPv6 devices) will get
+more and more difficult. Although client devices know where they are, there's no
+way for servers (or other clients in a Peer-To-Peer environment) to know where
+each-other are.</p>
+<p>Although commercial databases (like MaxMind) exist, they cost a lot of money
+and can't keep up-to-date with edge devices.  Thus, we're attempting to create
+a crowd-sourced database driven by the community</p>
+<h2>How do I contribute information?</h2>
+<p>Grab one of our client SDKs to start contributing data</p>
+<p>Browser SDK:</p>
+<code>&lt;script src="https://cdn.rawgit.com/issacg/wheresmyip/master/wheresmyip-browser.js"/&gt;&lt;/script&gt;<br/>
+&lt;script&gt;wheresmyip.submit();&lt;/script&gt;
+</code>
+<p>Do-it-yourself</p>
+<p>Make a POST request to https://api.wheresmyip.org/ip<br/>The POST content
+should be type <code>application/json</code> and contain a JSON object
+containing the two properties <code>lat</code> and <code>lon</code> with
+decimal lattitude/longitude coordinates.</p>
+<p>For example:</p>
+<code>{"lat": 41.9040, "lon": 12.4530}</code>
+<h2>How can I get data?</h2>
+<p>Send requests to https://api.wheresmyip.org/ip/&lt;address&gt;</p> where
+"address" is a valid IPv4 or IPv6 address.  Bear in mind that as a young and
+crowdsourced project, there isn't much data yet...</p>
+<p>The output will be a JSON object containing the following fields:</p>
+<ul>
+    <li>IP - The ip address requested</li>
+    <li>Lat - The last known lattitude associated with the IP</li>
+    <li>Lon- The last known longitude associated with the IP</li>
+    <li>LastUpdated - The unix-timestamp of the last update for the given IP</li>
+</ul>
+<h3>Demo</h3>
+<p>If you're using a modern browser which supports the GeoLocation API (most
+do), then click this button to submit
+<a href="http://bot.whatismyipaddress.com">your IP</a> to our database</p>
+<button onclick="wheresmyip.submit()">Submit My Data</button>
+<br/>
+<form id="lookupForm">
+<script>
+    function lookupMyIP() {
+        document.getElementById("lookupForm").action = "https://api.wheresmyip.org/ip/" + document.getElementById("addrToCheck").value;
+        document.getElementById("lookupForm").submit();
+    }
+</script>
+
+<input type="text" value="127.0.0.1" id="addrToCheck"><button onclick="lookupMyIP()">Look up info</button>
+</form>
+<br/>
+<p><a href="http://bot.whatismyipaddress.com">What's my IP?</a></p>
+<h3>FAQ</h3>
+    <ul>
+        <li>Do you support IPv6?</li>
+        <p>Sortof.  The database and application support it.  It's currently not on a dual-stack endpoint, so can't accept IPv6 submissions, but once the endpoint is dual-stack, it will work.</p>
+        <li>Can I set it up on my own?</li>
+        <p>There will (hopefully soon) be a script to install the entire stack on your Amazon AWS account.  If you don't get much traffic, you'll be fine on the free tier.  Check the /install folder on GitHub</p>
+        <li>Can I contribute code</li>
+        <p><a href="https://github.com/issacg/wheresmyip">Fork us and submit pull requests</a></p>
+        <li>Why does it look like sh*t?</li>
+        <p>This project was (so far) the result of an 8-hour hackathon hosted by <a href="http://ironsrc.com">ironSource</a>.  Most of my time went to writing the application (and starting the installer).  Plus, my HTML skills suck.  Sorry 'bout that...</p>
+    </ul>
+</h3>
+</body>
+</html>

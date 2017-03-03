@@ -1,0 +1,163 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "DB Security Group",
+    "Parameters": {
+        "AccountName": {
+            "Description": "Specify AWS Account Num",
+            "Type": "String",
+            "Default": "0123456781910",
+            "MinLength": "12",
+            "MaxLength": "12",
+            "AllowedPattern": "[0-9]*",
+            "ConstraintDescription": "Must Set Account Name"
+        },
+        "bucketName": {
+            "Description": "S3 BucketName",
+            "Type": "String",
+            "Default": "0123456781910",
+            "ConstraintDescription": "Must Set BucketName"
+        },
+        "S3Key": {
+            "Description": "S3 KeyName",
+            "Type": "String",
+            "Default": "0123456781910",
+            "ConstraintDescription": "Must Set S3Key"
+        },
+        "TableName": {
+            "Description": "DynamoDB Table Name",
+            "Type": "String",
+            "Default": "whereismyip_cf",
+            "MinLength": "12",
+            "MaxLength": "12",
+            "AllowedPattern": "[0-9]*",
+            "ConstraintDescription": "Must Set Account Name"
+        }
+    },
+    "Resources": {
+  "LambdarolePolicies": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "LambdaPolicy", 
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow", 
+                                        "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:BatchGetItem",
+                "dynamodb:Query",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:BatchWriteItem"
+            										],
+                            "Resource"  : { "Fn::Join" :  [ "",
+                [ "arn:aws:dynamodb:", { "Ref" : "AWS::Region" }, ":", {"Ref" : "AccountName"}, ":table/", { "Ref" : "DynamoDBTable" } ]
+              ]
+            }
+                        }
+                    ]
+                }, 
+                "Roles": [ { "Ref": "Lambdarole" } ]
+            },
+            "DependsOn" : "DynamoDBTable"
+        }, 
+        "Lambdarole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "Path": "/",
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Sid": "",
+                            "Effect": "Allow", 
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            }, 
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                } 
+            }
+        }, 
+        "hereismyIPLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Description": "whereismyip_set",
+                "Handler": "lamda.set",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LambdaExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "Code": {
+                    "S3Bucket": { "Ref" : "bucketName"},
+                    "S3Key": { "Ref" : "S3Key"}
+                },
+                "Runtime": "nodejs",
+                "Timeout": "25"
+            }
+        },
+
+          "hereismyIPLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Description": "whereismyip_get",
+                "Handler": "lamda.get",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LambdaExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "Code": {
+                    "S3Bucket": { "Ref" : "bucketName"},
+                    "S3Key": { "Ref" : "S3Key"}
+                },
+                "Runtime": "nodejs",
+                "Timeout": "25"
+            }
+        },
+
+          "hereismyIPLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Description": "whereismyip_noop_cf",
+                "Handler": "lamda.noop",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LambdaExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "Code": {
+                    "S3Bucket": { "Ref" : "bucketName"},
+                    "S3Key": { "Ref" : "S3Key"}
+                },
+                "Runtime": "nodejs",
+                "Timeout": "25"
+            }
+        },
+        "DynamoDBTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "KeySchema": {
+                    "HashKeyElement": {
+                        "AttributeName": "IP",
+                        "AttributeType": "N"
+                    }
+                },
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": "5",
+                    "WriteCapacityUnits": "10"
+                },
+                "TableName": {
+                    "Ref": "TableName"
+                }
+            }
+        }
+    }
+}

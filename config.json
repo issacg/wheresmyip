@@ -1,0 +1,8 @@
+{
+    "aws": {
+        "s3bucket": "wheresmyip-org",
+        "region": "eu-west-1",
+        "ddbtable": "wheresmyip",
+        "cfstack": "wheresmyip"
+    }
+}
